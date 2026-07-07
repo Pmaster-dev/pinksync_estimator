@@ -12,7 +12,7 @@ export default function Estimator() {
     <div className="container py-10">
       <div className="flex flex-col gap-8">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">
+          <h1 className="page-title text-4xl font-bold tracking-tight mb-2">
             🩷 PinkSync Universal Estimator
           </h1>
           <p className="text-xl text-muted-foreground">
@@ -20,7 +20,7 @@ export default function Estimator() {
           </p>
         </div>
 
-        <Card className="border-primary/20">
+        <Card className="scroll-reveal border-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calculator className="h-5 w-5" />
@@ -46,7 +46,8 @@ export default function Estimator() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="cq">
+          <div className="pair-grid scroll-reveal">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -88,9 +89,10 @@ export default function Estimator() {
               </div>
             </CardContent>
           </Card>
+          </div>
         </div>
 
-        <Card>
+        <Card className="scroll-reveal">
           <CardHeader>
             <CardTitle>Core Modules</CardTitle>
             <CardDescription>
@@ -129,7 +131,7 @@ export default function Estimator() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="scroll-reveal">
           <CardHeader>
             <CardTitle>Supported Industries</CardTitle>
             <CardDescription>
@@ -137,7 +139,7 @@ export default function Estimator() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="reveal-group grid grid-cols-2 md:grid-cols-5 gap-3">
               {[
                 { name: 'Healthcare', emoji: '🏥', mult: '2.88x' },
                 { name: 'Finance', emoji: '💰', mult: '3.53x' },
@@ -152,7 +154,7 @@ export default function Estimator() {
               ].map((industry) => (
                 <div 
                   key={industry.name}
-                  className="border rounded-lg p-3 text-center hover:border-primary/50 transition-colors"
+                  className="reveal-card border rounded-lg p-3 text-center hover:border-primary/50 hover:-translate-y-0.5"
                 >
                   <div className="text-2xl mb-1">{industry.emoji}</div>
                   <div className="text-sm font-semibold">{industry.name}</div>
@@ -163,7 +165,7 @@ export default function Estimator() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="scroll-reveal">
           <CardHeader>
             <CardTitle>User Management Tiers</CardTitle>
             <CardDescription>
@@ -171,7 +173,7 @@ export default function Estimator() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="reveal-group subgrid-row grid grid-cols-1 md:grid-cols-4 gap-4">
               {[
                 { name: 'Free', price: '$0', calls: '100', storage: '1 GB', tokens: '10K' },
                 { name: 'Basic', price: '$9.99', calls: '1K', storage: '10 GB', tokens: '100K' },
@@ -180,10 +182,10 @@ export default function Estimator() {
               ].map((tier) => (
                 <div 
                   key={tier.name}
-                  className="border rounded-lg p-4 hover:border-primary/50 transition-colors"
+                  className="subgrid-item reveal-card border rounded-lg p-4 hover:border-primary/50 hover:-translate-y-0.5"
                 >
-                  <h3 className="font-semibold text-lg mb-2">{tier.name}</h3>
-                  <div className="text-2xl font-bold text-primary mb-3">{tier.price}<span className="text-sm text-muted-foreground">/mo</span></div>
+                  <h3 className="font-semibold text-lg">{tier.name}</h3>
+                  <div className="text-2xl font-bold text-primary">{tier.price}<span className="text-sm text-muted-foreground">/mo</span></div>
                   <ul className="text-xs space-y-1 text-muted-foreground">
                     <li>• {tier.calls} API calls</li>
                     <li>• {tier.storage} storage</li>

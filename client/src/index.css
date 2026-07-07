@@ -77,21 +77,167 @@
     @apply border-border;
   }
 
+  /* Native color-scheme so form controls / scrollbars follow the theme */
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
 
-/* Custom scrollbar */
+/* ------------------------------------------------------------------ */
+/* Modern browser-native CSS features                                  */
+/* ------------------------------------------------------------------ */
+
+/* Standards-based scrollbar (with WebKit fallback) using CSS nesting */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
+
+  &-track {
+    background: transparent;
+  }
+
+  &-thumb {
+    background: hsl(var(--muted-foreground) / 0.4);
+    border-radius: 9999px;
+
+    &:hover {
+      background: hsl(var(--muted-foreground) / 0.7);
+    }
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+/* ---- Container queries -------------------------------------------- */
+/* Any element with .cq becomes a size query container; grids inside   */
+/* respond to the container width instead of the viewport.             */
+.cq {
+  container-type: inline-size;
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-neutral-400 dark:bg-neutral-600 rounded;
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@container (min-width: 34rem) {
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 56rem) {
+  .card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Two-column pair that responds to its container */
+.pair-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@container (min-width: 40rem) {
+  .pair-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- :has() driven interactions ----------------------------------- */
+/* When hovering one card in a grid, gently de-emphasize its siblings. */
+@media (hover: hover) {
+  .reveal-group:has(.reveal-card:hover) .reveal-card:not(:hover) {
+    opacity: 0.55;
+    filter: saturate(0.85);
+  }
+}
+
+.reveal-card {
+  transition: opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ---- Subgrid: align internal rows across a row of cards ----------- */
+@supports (grid-template-rows: subgrid) {
+  .subgrid-row {
+    grid-template-rows: repeat(3, auto);
+
+    & > .subgrid-item {
+      grid-row: span 3;
+      display: grid;
+      grid-template-rows: subgrid;
+      gap: 0.5rem;
+    }
+  }
+}
+
+/* ---- Scroll-driven reveal animations ------------------------------ */
+@keyframes scroll-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .scroll-reveal {
+      animation: scroll-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 25%;
+    }
+  }
+}
+
+/* ---- View Transitions (SPA route changes) ------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.35s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ::view-transition-old(root) {
+    animation-name: vt-fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: vt-fade-in;
+  }
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+/* Persist the page heading across route changes for a smooth morph */
+.page-title {
+  view-transition-name: page-title;
 }

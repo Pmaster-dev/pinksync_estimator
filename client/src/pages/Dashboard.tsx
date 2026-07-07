@@ -63,7 +63,8 @@ export default function Dashboard() {
             <Skeleton className="h-4 w-80" />
           </div>
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="cq">
+            <div className="card-grid">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card key={i} className="overflow-hidden">
                 <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -81,6 +82,7 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             ))}
+            </div>
           </div>
         </div>
       </div>
@@ -92,7 +94,7 @@ export default function Dashboard() {
     return (
       <div className="container py-10">
         <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-4xl font-bold tracking-tight mb-4">Welcome to Pinky's AI OS</h1>
+          <h1 className="page-title text-4xl font-bold tracking-tight mb-4">Welcome to Pinky's AI OS</h1>
           <p className="text-xl text-muted-foreground mb-8">
             Your AI-powered personal productivity hub for cross-platform file management, 
             document organization, and workflow automation.
@@ -149,15 +151,16 @@ export default function Dashboard() {
     <div className="container py-10">
       <div className="flex flex-col gap-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome, {user?.username || "User"}!</h1>
+          <h1 className="page-title text-3xl font-bold tracking-tight">Welcome, {user?.username || "User"}!</h1>
           <p className="text-muted-foreground mt-2">
             Your AI-powered personal productivity hub
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="cq">
+          <div className="card-grid reveal-group">
           {modules.map((module) => (
-            <Card key={module.title} className="overflow-hidden">
+            <Card key={module.title} className="reveal-card scroll-reveal overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                 <CardTitle className="text-xl">{module.title}</CardTitle>
                 {module.icon}
@@ -189,6 +192,7 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           ))}
+          </div>
         </div>
       </div>
     </div>

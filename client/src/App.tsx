@@ -1,4 +1,6 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Router as WouterRouter } from "wouter";
+import { useBrowserLocation } from "wouter/use-browser-location";
+import { flushSync } from "react-dom";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,6 +12,29 @@ import { AppProvider } from "./contexts/AppContext";
 import Layout from "@/components/Layout";
 import { useAuth } from "./hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
+
+// Custom wouter location hook that upgrades in-app navigation to use the
+// native View Transitions API. flushSync forces React to commit the new
+// route synchronously so the transition captures the correct end state.
+function useViewTransitionLocation(): [string, (to: string, options?: any) => void] {
+  const [location, navigate] = useBrowserLocation();
+
+  const navigateWithTransition = (to: string, options?: any) => {
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => unknown;
+    };
+
+    if (typeof doc.startViewTransition === "function") {
+      doc.startViewTransition(() => {
+        flushSync(() => navigate(to, options));
+      });
+    } else {
+      navigate(to, options);
+    }
+  };
+
+  return [location, navigateWithTransition];
+}
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType<any> }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -36,8 +61,9 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 
 function Router() {
   return (
-    <Layout>
-      <Switch>
+    <WouterRouter hook={useViewTransitionLocation}>
+      <Layout>
+        <Switch>
         <Route path="/" component={Dashboard} />
         <Route path="/estimator" component={Estimator} />
         <Route path="/sync">
@@ -56,8 +82,9 @@ function Router() {
           <ProtectedRoute component={() => <div className="container py-10"><h1 className="text-3xl font-bold">Database</h1><p className="text-muted-foreground mt-2">Coming soon</p></div>} />
         </Route>
         <Route component={NotFoundPage} />
-      </Switch>
-    </Layout>
+        </Switch>
+      </Layout>
+    </WouterRouter>
   );
 }
 
